@@ -25,23 +25,27 @@ async function connectClient() {
 connectClient();
 
 app.post('/api/save', async (req, res) => {
-  try {
-    const db = client.db('EVAT'); // Change if your DB name is different
-    const collection = db.collection('user_responses'); // Change if your collection name is different
+  console.log('Webhook triggered');
+  console.log('Request headers:', req.headers);
+  console.log('Request body:', req.body);
 
-    // Basic validation example (optional)
+  try {
+    const db = client.db('EVAT'); // Check your DB name here
+    const collection = db.collection('user_responses'); // Check your collection name here
+
     if (!req.body || Object.keys(req.body).length === 0) {
+      console.log('No data received');
       return res.status(400).json({ message: 'No data provided' });
     }
 
     const result = await collection.insertOne(req.body);
+    console.log('Data saved to MongoDB with ID:', result.insertedId);
     res.status(200).json({ message: 'Data saved successfully', id: result.insertedId });
   } catch (err) {
     console.error('Error saving data:', err);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
-
 app.get('/', (req, res) => {
   res.send('EV Usage Insights API is live!');
 });
