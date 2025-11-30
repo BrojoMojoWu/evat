@@ -106,7 +106,8 @@ const keepAlivePredictService = async () => {
       charging_preference: "",
       budget: "",
       priorities: "",
-      postcode: ""
+      postcode: "",
+      email: ""
     }, { timeout: 10000 });
     console.log('Prediction service warmed up!');
   } catch (err) {
