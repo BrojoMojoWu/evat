@@ -25,6 +25,33 @@ async function connectClient() {
 }
 connectClient();
 
+// GET /api/user-data?email=<email>
+// Returns the user's record from MongoDB
+app.get('/api/user-data', async (req, res) => {
+  try {
+    const email = req.query.email;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const db = client.db('EVAT');
+    const collection = db.collection('user_responses');
+
+    const userRecord = await collection.findOne({ email: email });
+
+    if (!userRecord) {
+      return res.status(404).json({ message: "No record found for this email" });
+    }
+
+    res.status(200).json(userRecord);
+
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 // POST /api/save webhook
 app.post('/api/save', async (req, res) => {
   console.log('Webhook triggered');
